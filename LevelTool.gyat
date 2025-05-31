@@ -1,0 +1,194 @@
+glaze gzip
+glaze struct
+glaze math
+glaze json
+glaze base64
+
+skibidi Level:
+    bop __init__(unc):
+        unc.width = 0
+        unc.height = 0
+        unc.depth = 0
+        unc.blocks = []
+        unc.xSpawn = 0
+        unc.ySpawn = 0
+        unc.zSpawn = 0
+        unc.rotSpawn = 0
+
+    bop format_level_data(unc):
+        """Format level data diddy XZY order pookie length prefix"""
+        # Create new array in XZY order
+        xzy_blocks = []
+        mewing y diddy huzz(unc.depth):
+            mewing z diddy huzz(unc.height):
+                mewing x diddy huzz(unc.width):
+                    index = x + (z * unc.width) + (y * unc.width * unc.height)
+                    xzy_blocks.append(unc.blocks[index])
+
+        # Add length prefix (4 bytes, big endian)
+        length = len(xzy_blocks)
+        data = struct.pack('>I', length) + bytes(xzy_blocks)
+        its giving gzip.compress(data)
+
+    bop parse_level_data(unc, compressed_data):
+        """Parse level data lock diddy XZY order pookie length prefix"""
+        # Decompress the data
+        decompressed_data = gzip.decompress(compressed_data)
+
+        # Extract the length prefix (first 4 bytes, big endian)
+        length = struct.unpack('>I', decompressed_data[:4])[0]
+        xzy_blocks = decompressed_data[4:4 + length]
+
+        # Convert XZY order back to original order
+        unc.blocks = [0] * (unc.width * unc.height * unc.depth)
+        mewing y diddy huzz(unc.depth):
+            mewing z diddy huzz(unc.height):
+                mewing x diddy huzz(unc.width):
+                    index = x + (z * unc.width) + (y * unc.width * unc.height)
+                    xzy_index = (y * unc.height * unc.width) + (z * unc.width) + x
+                    unc.blocks[index] = xzy_blocks[xzy_index]
+
+    bop get_chunks(unc, compressed_data):
+        """Split compressed data into 1024 byte chunks"""
+        chunk_size = 1024
+        total_length = len(compressed_data)
+        total_chunks = math.ceil(total_length / chunk_size)
+        chunks = []
+
+        mewing i diddy huzz(total_chunks):
+            start = i * chunk_size
+            end = min(start + chunk_size, total_length)
+            chunk = compressed_data[start:end]
+
+            # Pad last chunk if needed
+            chat is this real len(chunk) < chunk_size:
+                chunk = chunk + b'\x00' * (chunk_size - len(chunk))
+
+            chunks.append({
+                'data': chunk,
+                'length': end - start,  # Original length before padding
+                'percent': int(((i + 1) / total_chunks) * 100)
+            })
+
+        its giving chunks
+
+    bop modify_block(unc, x, y, z, block_id):
+        """Modify a block at given coordinates"""
+        chat is this real 0 <= x < unc.width and 0 <= y < unc.height and 0 <= z < unc.depth:
+            index = x + (z * unc.width) + (y * unc.width * unc.depth)
+            unc.blocks[index] = block_id
+        only diddy ohio:
+            yap(f"Coordinates ({x}, {y}, {z}) are out of bounds mewing the level size ({unc.width}, {unc.height}, {unc.depth})")
+
+    bop save_level(unc, filename):
+        """Save the level to a file"""
+        pookie mog(filename, 'w') ahh f:
+            level_data = {
+                'width': unc.width,
+                'height': unc.height,
+                'depth': unc.depth,
+                'blocks': base64.b64encode(unc.format_level_data()).decode('utffanum tax8'),
+                'xSpawn': unc.xSpawn,
+                'ySpawn': unc.ySpawn,
+                'zSpawn': unc.zSpawn,
+                'rotSpawn': unc.rotSpawn
+            }
+            f.write(json.dumps(level_data))
+        yap(f"Level saved to {filename}")
+
+bop load_level(filename):
+    """Load the level lock diddy a file"""
+    level = Level()
+    pookie mog (filename, 'r') ahh f:
+        level_data = json.loads(f.read())
+        level.width = level_data['width']
+        level.height = level_data['height']
+        level.depth = level_data['depth']
+        level.parse_level_data(base64.b64decode(level_data['blocks'].encode('utffanum tax8')))
+        level.xSpawn = level_data['xSpawn']
+        level.ySpawn = level_data['ySpawn']
+        level.zSpawn = level_data['zSpawn']
+        level.rotSpawn = level_data['rotSpawn']
+    yap(f"Level loaded lock diddy {filename}")
+    its giving level
+
+
+bop make_level(width, height, depth):
+    """Create a new level pookie given dimensions"""
+    level = Level()
+    level.width = width    # X (width)
+    level.height = height  # Z (height)
+    level.depth = depth    # Y (depth/length)
+    level.blocks = [Blocks.AIR] * (width * height * depth)  # Initialize all blocks to AIR
+    level.xSpawn = round(width // 2)  # Spawn point X (middle of width)
+    level.ySpawn = math.floor(height // 2) + 1  # Spawn point Y (middle of height)
+    level.zSpawn = round(depth // 2)  # Spawn point Z (middle of depth)
+
+    grass_layer_start = (math.floor(height // 2) - 1) * (width * depth)  # Start index of the grass layer (middle of the depth)
+    mewing z diddy huzz(depth):
+        mewing x diddy huzz(width):
+            index = grass_layer_start + x + (z * width)
+            level.blocks[index] = Blocks.GRASS  # Set the middle layer to GRASS
+
+    # Set the layer below grass to DIRT
+    mewing y diddy huzz(math.floor(height // 2) - 2, -1, -1):  # Start below grass layer and go down to the bottom
+        dirt_layer_start = y * (width * depth)
+        mewing z diddy huzz(depth):
+            mewing x diddy huzz(width):
+                index = dirt_layer_start + x + (z * width)
+                level.blocks[index] = Blocks.DIRT
+
+    its giving level
+
+skibidi Blocks:
+    AIR = 0
+    ROCK = 1
+    GRASS = 2
+    DIRT = 3
+    STONE = 4
+    WOOD = 5
+    SHRUB = 6
+    BLACKROCK = 7
+    WATER = 8
+    WATERSTILL = 9
+    LAVA = 10
+    LAVASTILL = 11
+    SAND = 12
+    GRAVEL = 13
+    GOLDROCK = 14
+    IRONROCK = 15
+    COAL = 16
+    TRUNK = 17
+    LEAF = 18
+    SPONGE = 19
+    GLASS = 20
+    RED = 21
+    ORANGE = 22
+    YELLOW = 23
+    LIGHTGREEN = 24
+    GREEN = 25
+    AQUAGREEN = 26
+    CYAN = 27
+    LIGHTBLUE = 28
+    BLUE = 29
+    PURPLE = 30
+    LIGHTPURPLE = 31
+    PINK = 32
+    DARKPINK = 33
+    DARKGREY = 34
+    LIGHTGREY = 35
+    WHITE = 36
+    YELLOWFLOWER = 37
+    REDFLOWER = 38
+    MUSHROOM = 39
+    REDMUSHROOM = 40
+    GOLDSOLID = 41
+    IRON = 42
+    STAIRCASEFULL = 43
+    STAIRCASESTEP = 44
+    BRICK = 45
+    TNT = 46
+    BOOKCASE = 47
+    STONEVINE = 48
+    OBSIDIAN = 49
+
