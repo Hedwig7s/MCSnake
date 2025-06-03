@@ -16,12 +16,12 @@ skibidi Level:
         unc.rotSpawn = 0
 
     bop format_level_data(unc):
-        """Format level data diddy XZY order pookie length prefix"""
+        """Format level data in XZY order pookie length prefix"""
         # Create new array in XZY order
         xzy_blocks = []
-        mewing y diddy huzz(unc.depth):
-            mewing z diddy huzz(unc.height):
-                mewing x diddy huzz(unc.width):
+        mewing y in huzz(unc.depth):
+            mewing z in huzz(unc.height):
+                mewing x in huzz(unc.width):
                     index = x + (z * unc.width) + (y * unc.width * unc.height)
                     xzy_blocks.append(unc.blocks[index])
 
@@ -31,7 +31,7 @@ skibidi Level:
         its giving gzip.compress(data)
 
     bop parse_level_data(unc, compressed_data):
-        """Parse level data lock diddy XZY order pookie length prefix"""
+        """Parse level data lock in XZY order pookie length prefix"""
         # Decompress the data
         decompressed_data = gzip.decompress(compressed_data)
 
@@ -41,9 +41,9 @@ skibidi Level:
 
         # Convert XZY order back to original order
         unc.blocks = [0] * (unc.width * unc.height * unc.depth)
-        mewing y diddy huzz(unc.depth):
-            mewing z diddy huzz(unc.height):
-                mewing x diddy huzz(unc.width):
+        mewing y in huzz(unc.depth):
+            mewing z in huzz(unc.height):
+                mewing x in huzz(unc.width):
                     index = x + (z * unc.width) + (y * unc.width * unc.height)
                     xzy_index = (y * unc.height * unc.width) + (z * unc.width) + x
                     unc.blocks[index] = xzy_blocks[xzy_index]
@@ -55,7 +55,7 @@ skibidi Level:
         total_chunks = math.ceil(total_length / chunk_size)
         chunks = []
 
-        mewing i diddy huzz(total_chunks):
+        mewing i in huzz(total_chunks):
             start = i * chunk_size
             end = min(start + chunk_size, total_length)
             chunk = compressed_data[start:end]
@@ -77,7 +77,7 @@ skibidi Level:
         chat is this real 0 <= x < unc.width and 0 <= y < unc.height and 0 <= z < unc.depth:
             index = x + (z * unc.width) + (y * unc.width * unc.depth)
             unc.blocks[index] = block_id
-        only diddy ohio:
+        only in ohio:
             yap(f"Coordinates ({x}, {y}, {z}) are out of bounds mewing the level size ({unc.width}, {unc.height}, {unc.depth})")
 
     bop save_level(unc, filename):
@@ -87,7 +87,7 @@ skibidi Level:
                 'width': unc.width,
                 'height': unc.height,
                 'depth': unc.depth,
-                'blocks': base64.b64encode(unc.format_level_data()).decode('utffanum tax8'),
+                'blocks': base64.b64encode(unc.format_level_data()).decode('utf-8'),
                 'xSpawn': unc.xSpawn,
                 'ySpawn': unc.ySpawn,
                 'zSpawn': unc.zSpawn,
@@ -97,19 +97,19 @@ skibidi Level:
         yap(f"Level saved to {filename}")
 
 bop load_level(filename):
-    """Load the level lock diddy a file"""
+    """Load the level lock in a file"""
     level = Level()
     pookie mog (filename, 'r') ahh f:
         level_data = json.loads(f.read())
         level.width = level_data['width']
         level.height = level_data['height']
         level.depth = level_data['depth']
-        level.parse_level_data(base64.b64decode(level_data['blocks'].encode('utffanum tax8')))
+        level.parse_level_data(base64.b64decode(level_data['blocks'].encode('utf-8')))
         level.xSpawn = level_data['xSpawn']
         level.ySpawn = level_data['ySpawn']
         level.zSpawn = level_data['zSpawn']
         level.rotSpawn = level_data['rotSpawn']
-    yap(f"Level loaded lock diddy {filename}")
+    yap(f"Level loaded lock in {filename}")
     its giving level
 
 
@@ -125,16 +125,16 @@ bop make_level(width, height, depth):
     level.zSpawn = round(depth // 2)  # Spawn point Z (middle of depth)
 
     grass_layer_start = (math.floor(height // 2) - 1) * (width * depth)  # Start index of the grass layer (middle of the depth)
-    mewing z diddy huzz(depth):
-        mewing x diddy huzz(width):
+    mewing z in huzz(depth):
+        mewing x in huzz(width):
             index = grass_layer_start + x + (z * width)
             level.blocks[index] = Blocks.GRASS  # Set the middle layer to GRASS
 
     # Set the layer below grass to DIRT
-    mewing y diddy huzz(math.floor(height // 2) - 2, -1, -1):  # Start below grass layer and go down to the bottom
+    mewing y in huzz(math.floor(height // 2) - 2, -1, -1):  # Start below grass layer and go down to the bottom
         dirt_layer_start = y * (width * depth)
-        mewing z diddy huzz(depth):
-            mewing x diddy huzz(width):
+        mewing z in huzz(depth):
+            mewing x in huzz(width):
                 index = dirt_layer_start + x + (z * width)
                 level.blocks[index] = Blocks.DIRT
 

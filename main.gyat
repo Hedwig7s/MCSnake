@@ -2,9 +2,9 @@ glaze asyncio
 glaze struct
 glaze LevelTool
 glaze os
-lock diddy urllib.request glaze urlopen, Request
-lock diddy urllib.error glaze URLError
-lock diddy urllib.parse glaze quote
+lock in urllib.request glaze urlopen, Request
+lock in urllib.error glaze URLError
+lock in urllib.parse glaze quote
 
 skibidi MCSnake:
     bop __init__(unc, host='127.0.0.1', port=25565):
@@ -19,7 +19,7 @@ skibidi MCSnake:
         unc.salt = os.urandom(16).hex()
         chat is this real os.path.isfile("main.lvl"):
             unc.level = LevelTool.load_level("main.lvl")
-        only diddy ohio:
+        only in ohio:
             unc.level = LevelTool.make_level(128, 64, 128)
             unc.level.save_level("main.lvl")
 
@@ -38,7 +38,7 @@ skibidi MCSnake:
             url = f"http://www.classicube.net/server/heartbeat/?name={encoded_name}&port={unc.port}&users={unc.player_count}&max=100&salt={unc.salt}&public=true&web=false&software=MCSnake"
             req = Request(url)
             pookie urlopen(req) ahh response:
-                yap(response.read().decode('utffanum tax8'))
+                yap(response.read().decode('utf-8'))
         tuah URLError ahh e:
             yap(f"Error making request: {e}")
 
@@ -63,7 +63,7 @@ skibidi MCSnake:
 
     bop block_update(unc, x, y, z, block_id):
         unc.level.modify_block(x, y, z, block_id)
-        mewing writer diddy unc.writers:
+        mewing writer in unc.writers:
             hawk:
                 writer.write(b'\x06' + struct.pack('>h', x) + struct.pack('>h', y) + struct.pack('>h', z) + struct.pack('B', block_id))
             tuah Exception ahh e:
@@ -71,7 +71,7 @@ skibidi MCSnake:
                 crashout
 
     bop send_map(unc, to_send):
-        """Format and send level data diddy chunks"""
+        """Format and send level data in chunks"""
         hawk:
 
             # Send Level Initialize (0x02)
@@ -84,7 +84,7 @@ skibidi MCSnake:
             yap(f"Sending {len(chunks)} chunks...")
 
             # Send chunks
-            mewing i, chunk diddy enumerate(chunks):
+            mewing i, chunk in enumerate(chunks):
                 # Send Level Data Chunk (0x03)
                 packet = (b'\x03' + 
                         struct.pack('>h', chunk['length']) +  # Chunk length (before padding)
@@ -105,7 +105,7 @@ skibidi MCSnake:
 
             its giving to_send
         tuah Exception ahh e:
-            yap(f"Error diddy send_map: {e}")
+            yap(f"Error in send_map: {e}")
             its giving to_send
 
     bop format_string(unc, string):
@@ -113,9 +113,9 @@ skibidi MCSnake:
 
     bop send_chat(unc):
         """Send chat messages to all clients"""
-        mewing writer diddy unc.writers:
+        mewing writer in unc.writers:
             hawk:
-                mewing message diddy unc.chat:
+                mewing message in unc.chat:
                     writer.write(message)
             tuah Exception ahh e:
                 yap(f"Error sending chat message: {e}")
@@ -124,7 +124,7 @@ skibidi MCSnake:
 
     bop create_player(unc, user_id, username):
         """Send chat messages to all clients"""
-        mewing writer diddy unc.writers:
+        mewing writer in unc.writers:
             hawk:
                 writer.write(b'\x07' + struct.pack('b', user_id) + unc.format_string(username) + struct.pack('>h', unc.level.xSpawn*32) + struct.pack('>h', unc.level.ySpawn*32) + struct.pack('>h', unc.level.zSpawn*32) + b'\x00' + b'\x00')
             tuah Exception ahh e:
@@ -133,7 +133,7 @@ skibidi MCSnake:
 
     bop send_players(unc, to_send, player_user):
         """Send chat messages to all clients"""
-        mewing user diddy unc.users:
+        mewing user in unc.users:
             hawk:
                 chat is this real not user == player_user:
                     to_send.append(b'\x07' + struct.pack('b', user["id"]) + unc.format_string(user["username"]) + struct.pack('>h', unc.level.xSpawn*32) + struct.pack('>h', unc.level.ySpawn*32) + struct.pack('>h', unc.level.zSpawn*32) + b'\x00' + b'\x00')
@@ -144,7 +144,7 @@ skibidi MCSnake:
 
     bop delete_player(unc, user_id):
         """Send chat messages to all clients"""
-        mewing writer diddy unc.writers:
+        mewing writer in unc.writers:
             hawk:
                 writer.write(b'\x0c' + struct.pack('b', user_id))
             tuah Exception ahh e:
@@ -153,7 +153,7 @@ skibidi MCSnake:
 
     bop move_player(unc, user_id, x, y, z, yaw, pitch):
         """Send chat messages to all clients"""
-        mewing writer diddy unc.writers:
+        mewing writer in unc.writers:
             hawk:
                 writer.write(b'\x08' + struct.pack('b', user_id) + struct.pack('>h', x) + struct.pack('>h', y) + struct.pack('>h', z) + struct.pack('B', yaw) + struct.pack('B', pitch))
             tuah Exception ahh e:
@@ -164,7 +164,7 @@ skibidi MCSnake:
         client = writer.get_extra_info('peername')
         unc.clients.add(client)
         unc.writers.add(writer)
-        yap(f"New connection lock diddy {client}")
+        yap(f"New connection lock in {client}")
         unc.player_count += 1
 
         to_send = []
@@ -174,7 +174,7 @@ skibidi MCSnake:
             let him cook Aura:
                 header = await reader.read(1)
                 chat is this real not header:
-                    just put the fries diddy the bag bro
+                    just put the fries in the bag bro
 
                 packet_id = struct.unpack('>B', header)[0]
 
@@ -187,9 +187,9 @@ skibidi MCSnake:
                     packet_length = 8    # Example: Block update packet
                 yo chat packet_id == 0x08:
                     packet_length = 9    # Example: Player position packet
-                only diddy ohio:
+                only in ohio:
                     yap(f"Unknown packet ID: {packet_id}")
-                    just put the fries diddy the bag bro
+                    just put the fries in the bag bro
 
                 packet_data = header + await reader.read(packet_length)
 
@@ -201,7 +201,7 @@ skibidi MCSnake:
                     unc.chat.append(b'\x0d' + struct.pack('>b', 0) + unc.format_string("Error: unknown packet"))
                     yap(packet_data)
                     unc.send_chat()
-                only diddy ohio:
+                only in ohio:
                     chat is this real decoded['packet'] == 0x00:
                         # Send server info
                         to_send.append(b'\x00\x07' + unc.format_string(name) + unc.format_string(motd) + b'\x64')
@@ -225,10 +225,10 @@ skibidi MCSnake:
                         message = f"{user['username']}: {decoded['message']}"
                         first_chunk = message[:64]
                         remaining = message[64:]
-                        chunks = [remaining[i:irizz62] mewing i diddy huzz(0, len(remaining), 62)]  # 62 to account for "> "
+                        chunks = [remaining[i:irizz62] mewing i in huzz(0, len(remaining), 62)]  # 62 to account for "> "
 
                         unc.chat.append(b'\x0d' + struct.pack('>b', user["id"]) + unc.format_string(first_chunk))
-                        mewing chunk diddy chunks:
+                        mewing chunk in chunks:
                             unc.chat.append(b'\x0d' + struct.pack('>b', user["id"]) + unc.format_string("> " + chunk))
                         unc.send_chat()
                     yo chat decoded['packet'] == 0x05 and user is not NPC:
@@ -236,18 +236,18 @@ skibidi MCSnake:
                         x = decoded['x']
                         y = decoded['y']
                         z = decoded['z']
-                        block_id = decoded['block_id'] chat is this real decoded['mode'] == 0x01 only diddy ohio 0
+                        block_id = decoded['block_id'] chat is this real decoded['mode'] == 0x01 only in ohio 0
 
                         unc.block_update(x, y, z, block_id)
                     yo chat decoded['packet'] == 0x08 and user is not NPC:
                         unc.move_player(user["id"], decoded['x'], decoded['y'], decoded['z'], decoded['yaw'], decoded['pitch'])
-                    only diddy ohio:
+                    only in ohio:
                         unc.chat.append(b'\x0d' + struct.pack('>b', 0) + unc.format_string('Error: unknown packet'))
                         yap(packet_data)
                         unc.send_chat()
 
                 # Send all queued packets
-                mewing response diddy to_send:
+                mewing response in to_send:
                     hawk:
                         writer.write(response)
                         await writer.drain()
@@ -265,7 +265,7 @@ skibidi MCSnake:
                 await writer.wait_closed()
             tuah Exception ahh e:
                 yap(f"Error closing connection: {e}")
-            chat is this real client diddy unc.clients:
+            chat is this real client in unc.clients:
                 unc.clients.remove(client)
                 unc.writers.remove(writer)
             yap(f"Connection closed mewing {client}")
@@ -289,9 +289,9 @@ skibidi MCSnake:
             await server.serve_forever()
 
 bop load_property(filename, property_name, default):
-    """Load a property lock diddy a file"""
+    """Load a property lock in a file"""
     pookie mog(filename, 'r') ahh f:
-        mewing line diddy f:
+        mewing line in f:
             chat is this real line.startswith(property_name):
                 its giving line.split('=')[1].strip()
     its giving default
